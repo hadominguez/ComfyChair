@@ -1,4 +1,5 @@
 const Autor = require("./Autor");
+const Usuario = require("./Usuario");
 
 class Articulo {
     constructor(titulo, archivoAdjunto) {
@@ -38,7 +39,7 @@ class Articulo {
           esAutor = true;
         }
       }
-      if (autor instanceof Usuario && esAutor && this.autores.has(autor)) {
+      if (autor instanceof Usuario && esAutor && this.autores.includes(autor)) {
         this.autorEncargado = autor;
       } else {
         console.log('El usuario no tiene el rol de Autor');

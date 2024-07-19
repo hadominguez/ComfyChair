@@ -1,8 +1,8 @@
 const Articulo = require('./Articulo');
 
 class ArticuloPoster extends Articulo {
-  constructor(titulo, archivoAdjunto, autores, autorEncargado, fuenteURL) {
-    super(titulo, archivoAdjunto, autores, autorEncargado);
+  constructor(titulo, archivoAdjunto, fuenteURL) {
+    super(titulo, archivoAdjunto);
     this.fuenteURL = fuenteURL;
   }
 

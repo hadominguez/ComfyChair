@@ -21,8 +21,6 @@ class Conferencia {
       }
       if (chair instanceof Usuario && esChair) {
         this.chairs.push(chair);
-      } else {
-        console.log('El usuario no tiene el rol de Chair');
       }
     }
   
@@ -36,8 +34,6 @@ class Conferencia {
       }
       if (revisor instanceof Usuario && esRevisor) {
         this.comitePrograma.push(revisor);
-      } else {
-        console.log('El usuario no tiene el rol de Revisor');
       }
     }
   }

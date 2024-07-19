@@ -1,8 +1,8 @@
 const Articulo = require('./Articulo');
 
 class ArticuloRegular extends Articulo {
-  constructor(titulo, archivoAdjunto, autores, autorEncargado, abstract) {
-    super(titulo, archivoAdjunto, autores, autorEncargado);
+  constructor(titulo, archivoAdjunto, abstract) {
+    super(titulo, archivoAdjunto);
     this.abstract = abstract;
   }
 
