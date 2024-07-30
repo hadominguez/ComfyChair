@@ -1,0 +1,10 @@
+**Decisiones Tomadas Sobre el Enunciado de ComfyChair**
+
+1. **Estado del Proceso**:
+   - Los estados de las sesiones siguen un ciclo predeterminado: recepción, bidding, revisión, selección. Sin la posibilidad de volver a un estado anterior.
+
+2. **Asignación de Revisores**:
+   - Durante la etapa de asignación de revisores, se priorizan los revisores que indican interés en revisar un artículo. Si no hay suficientes interesados, se asignan aleatoriamente siguiendo el interés definido.
+
+3. **Criterio de Selección de Artículos**:
+   - Existen dos métodos de selección de artículos: corte fijo por porcentaje o selección por puntaje mínimo. Las sesiones pueden definir su manera de seleccionar o cambiar el criterio según necesidades.
