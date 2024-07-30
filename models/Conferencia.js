@@ -10,6 +10,25 @@ class Conferencia {
       this.comitePrograma = [];
       this.sesiones = [];
     }
+
+  crearSesion(tipo, topic, deadline) {
+    let sesion;
+    switch (tipo) {
+      case 'regular':
+        sesion = new SesionRegular(topic, deadline);
+        break;
+      case 'workshop':
+        sesion = new SesionWorkshop(topic, deadline);
+        break;
+      case 'poster':
+        sesion = new SesionPoster(topic, deadline);
+        break;
+      default:
+        throw new Error('Tipo de sesión no válido');
+    }
+    this.sesiones.push(sesion);
+    return sesion;
+  }
   
     agregarChair(chair) {
       let roles = chair.getRoles();
