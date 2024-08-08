@@ -29,27 +29,28 @@ package models {
     +chairs: List<Usuario>
     +comitePrograma: List<Usuario>
     +sesiones: List<Sesion>
-    +crearSesion(tipo: String, topic: String, deadline: Date)
+    +crearSesion(tipo: String, topic: String, deadline: Date): Sesion
     +agregarChair(chair: Usuario)
     +agregarRevisor(revisor: Usuario)
   }
 
   abstract class Sesion {
-    -topic: String
-    -deadline: Date
-    -articulos: List<Articulo>
-    -bids: List<Bid>
-    -estado: String
+    +topic: String
+    +deadline: Date
+    +articulos: List<Articulo>
+    +bids: List<Bid>
+    +estado: String
     +criterioSeleccion: String
     +porcentajeAceptacion: Float
     +puntajeMinimoAceptacion: Int
     +seleccionarArticulos()
     +agregarArticulo(articulo: Articulo)
-    +validarFormato(articulo: Articulo)
+    +validarFormato(articulo: Articulo): Boolean
     +avanzarEstado()
     +iniciarBidding()
     +recibirBid(revisor: Revisor, articulo: Articulo, estado: String)
-    +finalizarBidding()
+    +finalizarBidding(comitePrograma: List<Usuario>)
+    +asignarArticulos(comitePrograma: List<Usuario>)
     +finalizarRevision()
   }
 

@@ -5,6 +5,7 @@
 
 2. **Template Method**:
    - La clase abstracta `Sesion` define el método `seleccionarArticulos` que establece un esqueleto de un algoritmo para seleccionar artículos. Las subclases pueden redefinir pasos del algoritmo sin cambiar la estructura general del método.
+   - También, los métodos `validarFormato` en las clases `SesionRegular`, `SesionWorkshop` y `SesionPoster` siguen el patrón template method.
 
 3. **Strategy**:
    - El patrón Strategy se encuentra en cómo las sesiones implementan diferentes estrategias para validar el formato de los artículos (`validarFormato`).
