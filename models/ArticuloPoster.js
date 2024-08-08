@@ -7,7 +7,7 @@ class ArticuloPoster extends Articulo {
   }
 
   validarFormato() {
-    return this.titulo && this.autores.length >= 1;
+    return ((this.titulo !== null && this.variable !== "") && this.autores.length >= 1);
   }
 }
 

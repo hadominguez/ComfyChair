@@ -1,3 +1,5 @@
+const Bid = require('./Bid');
+
 class Sesion {
   constructor(topic, deadline) {
     if (new.target === Sesion) {
@@ -11,6 +13,7 @@ class Sesion {
     this.criterioSeleccion = 'corteFijo'; // Puede ser 'corteFijo' o 'mejores'
     this.porcentajeAceptacion = 0.3; // Ejemplo, acepta el 30% de los artículos
     this.puntajeMinimoAceptacion = 1; // Ejemplo, acepta artículos con puntaje mayor a 1
+    this.articulosAceptados = [];
   }
 
   seleccionarArticulos() {
@@ -32,10 +35,9 @@ class Sesion {
     });
 
     if (this.criterioSeleccion === 'corteFijo') {
-      let numeroArticulosAceptar = Math.floor(this.articulos.length * this.porcentajeAceptacion);
+      let numeroArticulosAceptar = Math.ceil(this.articulos.length * this.porcentajeAceptacion);
       this.articulosAceptados = this.articulos.slice(0, numeroArticulosAceptar);
     } else if (this.criterioSeleccion === 'mejores') {
-      this.articulosAceptados = [];
       for (let i = 0; i < this.articulos.length; i++) {
         if (this.articulos[i].puntuacionMedia > this.puntajeMinimoAceptacion) {
           this.articulosAceptados.push(this.articulos[i]);
@@ -97,12 +99,52 @@ class Sesion {
     this.bids.push(bid);
   }
 
-  finalizarBidding() {
+  finalizarBidding(comitePrograma) {
     if (this.estado !== 'bidding') {
       throw new Error('No se puede finalizar el bidding en el estado actual.');
     }
     this.estado = 'revision';
-    this.asignarArticulos();
+    this.asignarArticulos(comitePrograma);
+  }
+
+  asignarArticulos(comitePrograma) {
+    this.articulos.forEach((articulo) => {
+
+      let bids = this.bids.filter(bid => bid.articulo === articulo).sort((a, b) => {
+        const estadoOrden = { 'interesado': 1, 'quizas': 2, 'sin_interes': 3, 'no_interesado': 4 };
+        return estadoOrden[a.estado] - estadoOrden[b.estado];
+      });
+
+      for (let bid of bids) {
+        if (articulo.revisores.length < 3) {
+          if (!this.revisorTieneLimite(bid.revisor, comitePrograma)) {
+            bid.revisor.revisionesAsignadas++;
+            articulo.revisores.push(bid.revisor);
+          }
+        } else {
+          break;
+        }
+      }
+
+      while (articulo.revisores.length < 3) {
+        let revisor = this.seleccionarRevisorAleatorio(comitePrograma);
+        revisor.revisionesAsignadas++;
+        articulo.revisores.push(revisor);
+      }
+    });
+  }
+
+  revisorTieneLimite(revisor, comitePrograma) {
+    return revisor.revisionesAsignadas >= this.calcularRevisionesMaximas(comitePrograma);
+  }
+
+  calcularRevisionesMaximas(comitePrograma) {
+    let totalArticulos = this.articulos.length;
+    return Math.ceil((totalArticulos * 3) / comitePrograma.length);
+  }
+
+  seleccionarRevisorAleatorio(revisoresAsignados) {
+    return revisoresAsignados[Math.floor(Math.random() * revisoresAsignados.length)];
   }
 
   finalizarRevision() {

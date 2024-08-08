@@ -1,0 +1,117 @@
+@startuml
+
+package models {
+  class Usuario {
+    +nombre: String
+    +afiliacion: String
+    +email: String
+    +contrasena: String
+    +roles: Set<Rol>
+    +getRoles()
+    +agregarRol(rol: Rol)
+  }
+
+  abstract class Rol {
+  }
+
+  class Autor extends Rol {
+  }
+
+  class Revisor extends Rol {
+  }
+
+  class Chair extends Rol {
+  }
+
+  class Conferencia {
+    +nombre: String
+    +fecha: Date
+    +chairs: List<Usuario>
+    +comitePrograma: List<Usuario>
+    +sesiones: List<Sesion>
+    +crearSesion(tipo: String, topic: String, deadline: Date): Sesion
+    +agregarChair(chair: Usuario)
+    +agregarRevisor(revisor: Usuario)
+  }
+
+  abstract class Sesion {
+    +topic: String
+    +deadline: Date
+    +articulos: List<Articulo>
+    +bids: List<Bid>
+    +estado: String
+    +criterioSeleccion: String
+    +porcentajeAceptacion: Float
+    +puntajeMinimoAceptacion: Int
+    +seleccionarArticulos()
+    +agregarArticulo(articulo: Articulo)
+    +validarFormato(articulo: Articulo): Boolean
+    +avanzarEstado()
+    +iniciarBidding()
+    +recibirBid(revisor: Revisor, articulo: Articulo, estado: String)
+    +finalizarBidding(comitePrograma: List<Usuario>)
+    +asignarArticulos(comitePrograma: List<Usuario>)
+    +finalizarRevision()
+  }
+
+  class SesionRegular extends Sesion {
+    +validarFormato(articulo: ArticuloRegular): Boolean
+  }
+
+  class SesionWorkshop extends Sesion {
+    +validarFormato(articulo: Articulo): Boolean
+  }
+
+  class SesionPoster extends Sesion {
+    +validarFormato(articulo: ArticuloPoster): Boolean
+  }
+
+  abstract class Articulo {
+    +titulo: String
+    +archivoAdjunto: String
+    +autores: List<Usuario>
+    +autorEncargado: Usuario
+    +validarFormato(): Boolean
+    +agregarAutor(autor: Usuario)
+    +agregarAutorEncargado(autor: Usuario)
+  }
+
+  class ArticuloRegular extends Articulo {
+    +abstract: String
+    +validarFormato(): Boolean
+  }
+
+  class ArticuloPoster extends Articulo {
+    +fuenteURL: String
+    +validarFormato(): Boolean
+  }
+
+  class Revision {
+    +revisor: Usuario
+    +articulo: Articulo
+    +calificacion: Int
+    +comentario: String
+  }
+
+  class Bid {
+    +revisor: Usuario
+    +articulo: Articulo
+    +estado: String
+    +cambiarEstado(nuevoEstado: String)
+  }
+}
+
+Usuario "1" -- "*" Rol
+Conferencia "1" -- "*" Usuario : "chairs"
+Conferencia "1" -- "*" Usuario : "comitePrograma"
+Conferencia "1" -- "*" Sesion : "sesiones"
+Sesion "1" -- "*" Articulo : "articulos"
+Sesion "1" -- "*" Bid : "bids"
+Sesion "1" -- "*" Revision : "revisiones"
+Articulo "1" -- "*" Usuario : "autores"
+Bid "1" -- "1" Usuario : "revisor"
+Bid "1" -- "1" Articulo : "articulo"
+Revision "1" -- "1" Usuario : "revisor"
+Revision "1" -- "1" Articulo : "articulo"
+
+@enduml

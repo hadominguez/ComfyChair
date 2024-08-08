@@ -3,6 +3,15 @@ const Usuario = require('../models/Usuario');
 const Chair = require('../models/Chair');
 const Revisor = require('../models/Revisor');
 
+test('Crear y agregar sesión a conferencia', () => {
+    const conferencia = new Conferencia('Conferencia X', new Date());
+    const sesionRegular = conferencia.crearSesion('regular', 'Topic Regular', '2024-12-01');
+    const sesionWorkshop = conferencia.crearSesion('workshop', 'Topic Workshop', '2024-12-01');
+
+    expect(conferencia.sesiones).toContain(sesionRegular);
+    expect(conferencia.sesiones).toContain(sesionWorkshop);
+});
+
 test('Agregar chair y revisor a conferencia', () => {
   const conferencia = new Conferencia('Conferencia X', new Date());
   const usuario1 = new Usuario('Usuario1', 'Afiliacion1', 'email1@example.com', 'password1');
