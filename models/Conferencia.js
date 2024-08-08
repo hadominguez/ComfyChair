@@ -1,6 +1,9 @@
 const Usuario = require('./Usuario');
 const Chair = require('./Chair');
 const Revisor = require('./Revisor');
+const SesionRegular = require('./SesionRegular');
+const SesionWorkshop = require('./SesionWorkshop');
+const SesionPoster = require('./SesionPoster');
 
 class Conferencia {
   constructor(nombre, fecha) {
@@ -54,57 +57,6 @@ class Conferencia {
     if (revisor instanceof Usuario && esRevisor) {
       this.comitePrograma.push(revisor);
     }
-  }
-
-  asignarArticulos() {
-    this.sesiones.forEach(function (sesion) {
-      sesion.articulos.forEach(function (articulo) {
-        let revisoresAsignados = [];
-
-        let bids = articulo.bids.sort(function (a, b) {
-          const estadoOrden = { 'interesado': 1, 'quizas': 2, 'sin_interes': 3, 'no_interesado': 4 };
-          return estadoOrden[a.estado] - estadoOrden[b.estado];
-        });
-
-        for (let i = 0; i < bids.length; i++) {
-          let bid = bids[i];
-          if (revisoresAsignados.length < 3) {
-            if (!this.revisorTieneLímite(bid.revisor)) {
-              revisoresAsignados.push(bid.revisor);
-              bid.revisor.revisionesAsignadas++;
-            }
-          } else {
-            break;
-          }
-        }
-
-        while (revisoresAsignados.length < 3) {
-          let revisor = this.seleccionarRevisorAleatorio(revisoresAsignados);
-          revisoresAsignados.push(revisor);
-          revisor.revisionesAsignadas++;
-        }
-
-        articulo.revisoresAsignados = revisoresAsignados;
-      }.bind(this));
-    }.bind(this));
-  }
-
-  revisorTieneLímite(revisor) {
-    return revisor.revisionesAsignadas >= this.calcularRevisionesMaximas();
-  }
-
-  calcularRevisionesMaximas() {
-    let totalArticulos = this.sesiones.reduce(function (total, sesion) {
-      return total + sesion.articulos.length;
-    }, 0);
-    return Math.ceil((totalArticulos * 3) / this.comitePrograma.length);
-  }
-
-  seleccionarRevisorAleatorio(revisoresAsignados) {
-    let revisoresDisponibles = this.comitePrograma.filter(function (revisor) {
-      return !revisoresAsignados.includes(revisor);
-    });
-    return revisoresDisponibles[Math.floor(Math.random() * revisoresDisponibles.length)];
   }
 }
 

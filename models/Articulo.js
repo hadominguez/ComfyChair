@@ -9,11 +9,20 @@ class Articulo {
     this.titulo = titulo;
     this.archivoAdjunto = archivoAdjunto;
     this.autores = [];
+    this.revisores = [];
     this.autorEncargado = null;
   }
 
   validarFormato() {
     throw new Error("Este método debe ser implementado por las subclases.");
+  }
+
+  agregarRevisor(revisor) {
+    if (revisor instanceof Revisor) {
+      this.autores.push(autor);
+    } else {
+      console.log('No es un revisor');
+    }
   }
 
   agregarAutor(autor) {
