@@ -4,6 +4,9 @@ const Usuario = require('../models/Usuario');
 const Autor = require('../models/Autor');
 const Revisor = require('../models/Revisor');
 const Bid = require('../models/Bid');
+const Bidding = require('../models/Bidding');
+const Seleccion = require('../models/Seleccion');
+const Mejores = require('../models/Mejores');
 
 describe('Sesion', () => {
     it('Debería lanzar un error al instanciar la clase abstracta Sesion', () => {
@@ -12,7 +15,7 @@ describe('Sesion', () => {
     });
 
     it('Debería agregar un artículo a la sesión en estado de recepción', () => {
-        const sesion = new SesionRegular('Topic', '2024-12-01');
+        const sesion = new SesionRegular('Topic', '2025-12-01');
         const usuario = new Usuario('Autor', 'Afiliacion', 'email@ejemplo.com', 'contrasena');
         usuario.agregarRol(new Autor());
         const articulo = new ArticuloRegular('Título Regular', 'archivo', 'Resumen corto');
@@ -23,7 +26,7 @@ describe('Sesion', () => {
     });
 
     it('No debería permitir agregar artículos después de la fecha límite', () => {
-        const sesion = new SesionRegular('Topic', '2020-01-01');
+        const sesion = new SesionRegular('Topic', '2025-01-01');
         const usuario = new Usuario('Autor', 'Afiliacion', 'email@ejemplo.com', 'contrasena');
         usuario.agregarRol(new Autor());
         const articulo = new ArticuloRegular('Título Regular', 'archivo', 'Resumen corto');
@@ -33,36 +36,36 @@ describe('Sesion', () => {
     });
 
     it('Debería avanzar al siguiente estado', () => {
-        const sesion = new SesionRegular('Topic', '2024-12-01');
+        const sesion = new SesionRegular('Topic', '2025-12-01');
         sesion.avanzarEstado();
-        expect(sesion.estado).toBe('bidding');
+        expect(sesion.estado instanceof Bidding).toBe(true);
     });
 
     it('No debería avanzar más allá del último estado', () => {
-        const sesion = new SesionRegular('Topic', '2024-12-01');
+        const sesion = new SesionRegular('Topic', '2025-12-01');
         for (let i = 0; i < 4; i++) {
             sesion.avanzarEstado();
         }
-        expect(sesion.estado).toBe('seleccion');
+        expect(sesion.estado instanceof Seleccion).toBe(true);
         sesion.avanzarEstado();
-        expect(sesion.estado).toBe('seleccion');
+        expect(sesion.estado instanceof Seleccion).toBe(true);
     });
 
     it('Debería permitir iniciar el bidding en estado de recepción', () => {
-        const sesion = new SesionRegular('Topic', '2024-12-01');
+        const sesion = new SesionRegular('Topic', '2025-12-01');
         expect(() => sesion.iniciarBidding()).not.toThrow();
-        expect(sesion.estado).toBe('bidding');
+        expect(sesion.estado instanceof Bidding).toBe(true);
     });
 
     it('No debería permitir iniciar el bidding en un estado diferente de recepción', () => {
-        const sesion = new SesionRegular('Topic', '2024-12-01');
+        const sesion = new SesionRegular('Topic', '2025-12-01');
         sesion.avanzarEstado();
         sesion.avanzarEstado();
         expect(() => sesion.iniciarBidding()).toThrow('No se puede iniciar el bidding en el estado actual.');
     });
 
     it('Debería recibir un bid en el estado correcto', () => {
-        const sesion = new SesionRegular('Topic', '2024-12-01');
+        const sesion = new SesionRegular('Topic', '2025-12-01');
         sesion.iniciarBidding();
         const revisor = new Usuario('Revisor', 'Afiliacion', 'revisor@ejemplo.com', 'contrasena');
         const articulo = new ArticuloRegular('Título Regular', 'archivo', 'Resumen corto');
@@ -78,7 +81,7 @@ describe('Sesion', () => {
     });
 
     it('Debería finalizar el bidding y asignar artículos correctamente', () => {
-        const sesion = new SesionRegular('Topic', '2024-12-01');
+        const sesion = new SesionRegular('Topic', '2025-12-01');
         const revisor1 = new Usuario('Revisor1', 'Afiliacion1', 'revisor1@ejemplo.com', 'contrasena');
         const revisor2 = new Usuario('Revisor2', 'Afiliacion2', 'revisor2@ejemplo.com', 'contrasena');
         const usuario = new Usuario('Usuario1', 'Afiliacion1', 'email1@example.com', 'password1');
@@ -109,7 +112,7 @@ describe('Sesion', () => {
     });
 
     it('Debería finalizar la revisión y seleccionar artículos aceptados, calificación Corte Fijo', () => {
-        const sesion = new SesionRegular('Topic', '2024-12-01');
+        const sesion = new SesionRegular('Topic', '2025-12-01');
         sesion.avanzarEstado();
         sesion.avanzarEstado();
 
@@ -129,8 +132,7 @@ describe('Sesion', () => {
     });
 
     it('Debería finalizar la revisión y seleccionar artículos aceptados, calificación Mejores', () => {
-        const sesion = new SesionRegular('Topic', '2024-12-01');
-        sesion.criterioSeleccion="mejores";
+        const sesion = new SesionRegular('Topic', '2025-12-01', new Mejores(2));
         sesion.avanzarEstado();
         sesion.avanzarEstado();
 
@@ -138,7 +140,7 @@ describe('Sesion', () => {
         const articulo2 = new ArticuloRegular('Título Regular 2', 'archivo2', 'Resumen corto 2');
 
         articulo1.revisiones = [{ calificacion: 5 }, { calificacion: 4 }, { calificacion: 5 }];
-        articulo2.revisiones = [{ calificacion: 2 }, { calificacion: 2 }, { calificacion: 2 }];
+        articulo2.revisiones = [{ calificacion: 3 }, { calificacion: 2 }, { calificacion: 2 }];
 
         sesion.articulos.push(articulo1);
         sesion.articulos.push(articulo2);

@@ -7,7 +7,7 @@ package models {
     +email: String
     +contrasena: String
     +roles: Set<Rol>
-    +getRoles()
+    +getRoles(): Set<Rol>
     +agregarRol(rol: Rol)
   }
 
@@ -39,8 +39,8 @@ package models {
     +deadline: Date
     +articulos: List<Articulo>
     +bids: List<Bid>
-    +estado: String
-    +criterioSeleccion: String
+    +estado: EstadoSesion
+    +criterioSeleccion: EstrategiaDeSeleccion
     +porcentajeAceptacion: Float
     +puntajeMinimoAceptacion: Int
     +seleccionarArticulos()
@@ -99,6 +99,38 @@ package models {
     +estado: String
     +cambiarEstado(nuevoEstado: String)
   }
+
+  interface EstrategiaDeSeleccion {
+    +seleccionar(articulos: List<Articulo>): List<Articulo>
+  }
+
+  class Mejores implements EstrategiaDeSeleccion {
+    +seleccionar(articulos: List<Articulo>): List<Articulo>
+  }
+
+  class CorteFijo implements EstrategiaDeSeleccion {
+    +seleccionar(articulos: List<Articulo>): List<Articulo>
+  }
+
+  abstract class EstadoSesion {
+    +manejar(sesion: Sesion)
+  }
+
+  class Recepcion extends EstadoSesion {
+    +manejar(sesion: Sesion)
+  }
+
+  class Bidding extends EstadoSesion {
+    +manejar(sesion: Sesion)
+  }
+
+  class Revisiones extends EstadoSesion {
+    +manejar(sesion: Sesion)
+  }
+
+  class Seleccion extends EstadoSesion {
+    +manejar(sesion: Sesion)
+  }
 }
 
 Usuario "1" -- "*" Rol
@@ -107,6 +139,8 @@ Conferencia "1" -- "*" Usuario : "comitePrograma"
 Conferencia "1" -- "*" Sesion : "sesiones"
 Sesion "1" -- "*" Articulo : "articulos"
 Sesion "1" -- "*" Bid : "bids"
+Sesion "*" -- "1" EstrategiaDeSeleccion : "criterioSeleccion"
+Sesion "1" -- "*" EstadoSesion : "estado"
 Sesion "1" -- "*" Revision : "revisiones"
 Articulo "1" -- "*" Usuario : "autores"
 Bid "1" -- "1" Usuario : "revisor"
