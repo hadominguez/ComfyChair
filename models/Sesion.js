@@ -3,9 +3,10 @@ const Recepcion = require('./Recepcion');
 const Bidding = require('./Bidding');
 const Revisiones = require('./Revisiones');
 const Seleccion = require('./Seleccion');
+const CorteFijo = require('./CorteFijo');
 
 class Sesion {
-  constructor(topic, deadline) {
+  constructor(topic, deadline, estrategiaSeleccion) {
     if (new.target === Sesion) {
       throw new TypeError('No se puede instanciar la clase abstracta Sesion directamente.');
     }
@@ -14,7 +15,7 @@ class Sesion {
     this.articulos = [];
     this.bids = [];
     this.estado = new Recepcion(this);
-    this.criterioSeleccion = 'corteFijo'; // Puede ser 'corteFijo' o 'mejores'
+    this.estrategiaSeleccion = estrategiaSeleccion || new CorteFijo(0.3); // Corte fijo por defecto
     this.porcentajeAceptacion = 0.3; // Ejemplo, acepta el 30% de los artículos
     this.puntajeMinimoAceptacion = 1; // Ejemplo, acepta artículos con puntaje mayor a 1
     this.articulosAceptados = [];
@@ -42,23 +43,7 @@ class Sesion {
       return b.puntuacionMedia - a.puntuacionMedia;
     });
 
-    if (this.criterioSeleccion === 'corteFijo') {
-      let numeroArticulosAceptar = Math.ceil(this.articulos.length * this.porcentajeAceptacion);
-      this.articulosAceptados = this.articulos.slice(0, numeroArticulosAceptar);
-    } else if (this.criterioSeleccion === 'mejores') {
-      for (let i = 0; i < this.articulos.length; i++) {
-        if (this.articulos[i].puntuacionMedia > this.puntajeMinimoAceptacion) {
-          this.articulosAceptados.push(this.articulos[i]);
-        }
-      }
-    } else {
-      throw new Error('Criterio de selección no válido');
-    }
-
-    for (let i = 0; i < this.articulos.length; i++) {
-      let articulo = this.articulos[i];
-      articulo.aceptado = this.articulosAceptados.includes(articulo);
-    }
+    this.articulosAceptados = this.estrategiaSeleccion.seleccionarArticulos(this.articulos);
   }
 
   agregarArticulo(articulo) {
