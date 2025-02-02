@@ -1,14 +1,16 @@
 **Patrones de Diseño Aplicados en ComfyChair**
 
 1. **Factory Method**:
-   - La clase `Conferencia` tiene un método `crearSesion` que usa un Factory Method para crear instancias de `SesionRegular`, `SesionWorkshop`, y `SesionPoster` basado en un parámetro `tipo`.
+   - La clase Conferencia utiliza un Factory Method en el método crearSesion para crear instancias de diferentes tipos de sesiones (SesionRegular, SesionWorkshop, SesionPoster) basándose en un parámetro tipo. Esto permite flexibilidad al manejar diversos tipos de sesiones de conferencia.
 
 2. **Template Method**:
-   - La clase abstracta `Sesion` define el método `seleccionarArticulos` que establece un esqueleto de un algoritmo para seleccionar artículos. Las subclases pueden redefinir pasos del algoritmo sin cambiar la estructura general del método.
-   - También, los métodos `validarFormato` en las clases `SesionRegular`, `SesionWorkshop` y `SesionPoster` siguen el patrón template method.
+   - La clase base Sesion implementa el método seleccionarArticulos que actúa como un esqueleto de algoritmo. Las subclases, como SesionRegular, SesionWorkshop y SesionPoster, pueden redefinir pasos específicos de este algoritmo, permitiendo la variabilidad en el proceso manteniendo la estructura intacta del método.
 
 3. **Strategy**:
-   - El patrón Strategy se encuentra en cómo las sesiones implementan diferentes estrategias para validar el formato de los artículos (`validarFormato`).
+   - Las sesiones pueden implementar diferentes estrategias (Mejores, CorteFijo) para la selección de artículos a través de la interfaz EstrategiaDeSeleccion, lo cual demuestra una aplicación del patrón Strategy. Esto permite cambiar la lógica de selección de manera dinámica en función de la instancia de estrategia asignada a cada sesión.
 
 4. **Composite**:
-   - En la clase `Usuario`, se usa una estructura de roles donde un usuario puede tener múltiples roles (`Rol`, `Autor`, `Revisor`, `Chair`). Esto demuestra una relación Composite donde los usuarios contienen roles que pueden ser tratados de manera individual o en conjunto.
+   - La clase Usuario implementa una estructura compuesta donde un Usuario puede tener múltiples roles (Autor, Revisor, Chairman) y operaciones pueden ser aplicadas a estos de manera colectiva o individual. Esto facilita el manejo de diferentes funcionalidades desde una interfaz común para todos los roles.
+
+5. **State**:
+   - Se utiliza el patrón State en el cambio de estado de las sesiones (Sesion). Estados específicos como Recepcion, Bidding, Revisiones, Seleccion permiten que el comportamiento de la sesión varíe de acuerdo con su estado actual, mejorando la gestión del ciclo de vida de cada sesión.
