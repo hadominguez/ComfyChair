@@ -1,4 +1,8 @@
 const Bid = require('./Bid');
+const Recepcion = require('./Recepcion');
+const Bidding = require('./Bidding');
+const Revisiones = require('./Revisiones');
+const Seleccion = require('./Seleccion');
 
 class Sesion {
   constructor(topic, deadline) {
@@ -9,16 +13,20 @@ class Sesion {
     this.deadline = new Date(deadline);
     this.articulos = [];
     this.bids = [];
-    this.estado = 'recepcion';
+    this.estado = new Recepcion(this);
     this.criterioSeleccion = 'corteFijo'; // Puede ser 'corteFijo' o 'mejores'
     this.porcentajeAceptacion = 0.3; // Ejemplo, acepta el 30% de los artículos
     this.puntajeMinimoAceptacion = 1; // Ejemplo, acepta artículos con puntaje mayor a 1
     this.articulosAceptados = [];
   }
 
+  avanzarEstado() {
+    this.estado.avanzarEstado();
+  }
+
   seleccionarArticulos() {
-    if (this.estado !== 'seleccion') {
-      throw new Error('No se puede seleccionar artículos en una sesión que no está en fase de selección');
+    if (!(this.estado instanceof Seleccion)) {
+      throw new Error('No se puede seleccionar artículos cuando no se está en el estado de selección');
     }
 
     for (let i = 0; i < this.articulos.length; i++) {
@@ -54,7 +62,7 @@ class Sesion {
   }
 
   agregarArticulo(articulo) {
-    if (this.estado !== 'recepcion') {
+    if (!(this.estado instanceof Recepcion)) {
       throw new Error('No se puede agregar artículos a una sesión que no está en recepción');
     }
 
@@ -74,25 +82,23 @@ class Sesion {
     throw new Error("Este método debe ser implementado por las subclases.");
   }
 
+  setEstado(estado) {
+    this.estado = estado;
+  }
+
   avanzarEstado() {
-    const estados = ['recepcion', 'bidding', 'revision', 'seleccion'];
-    let currentIndex = estados.indexOf(this.estado);
-    if (currentIndex < estados.length - 1) {
-      this.estado = estados[currentIndex + 1];
-    } else {
-      console.log('La sesión ya está en el último estado.');
-    }
+    this.estado.avanzarEstado();
   }
 
   iniciarBidding() {
-    if (this.estado !== 'recepcion') {
+    if (!(this.estado instanceof Recepcion)) {
       throw new Error('No se puede iniciar el bidding en el estado actual.');
     }
-    this.estado = 'bidding';
+    this.avanzarEstado();
   }
 
   recibirBid(revisor, articulo, estado) {
-    if (this.estado !== 'bidding') {
+    if (!(this.estado instanceof Bidding)) {
       throw new Error('No se pueden recibir bids fuera del estado de bidding.');
     }
     const bid = new Bid(revisor, articulo, estado);
@@ -100,10 +106,10 @@ class Sesion {
   }
 
   finalizarBidding(comitePrograma) {
-    if (this.estado !== 'bidding') {
+    if (!(this.estado instanceof Bidding)) {
       throw new Error('No se puede finalizar el bidding en el estado actual.');
     }
-    this.estado = 'revision';
+    this.avanzarEstado();
     this.asignarArticulos(comitePrograma);
   }
 
@@ -148,10 +154,10 @@ class Sesion {
   }
 
   finalizarRevision() {
-    if (this.estado !== 'revision') {
+    if (!(this.estado instanceof Revisiones)) {
       throw new Error('No se puede finalizar la revisión en el estado actual.');
     }
-    this.estado = 'seleccion';
+    this.avanzarEstado();
     this.seleccionarArticulos();
   }
 }
