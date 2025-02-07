@@ -39,8 +39,8 @@ package models {
     +deadline: Date
     +articulos: List<Articulo>
     +bids: List<Bid>
-    +estado: EstadoSesion
-    +criterioSeleccion: EstrategiaDeSeleccion
+    +estado: Estado
+    +estrategiaSeleccion: EstrategiaSeleccion
     +porcentajeAceptacion: Float
     +puntajeMinimoAceptacion: Int
     +seleccionarArticulos()
@@ -70,6 +70,7 @@ package models {
     +titulo: String
     +archivoAdjunto: String
     +autores: List<Usuario>
+    +revisores: List<Usuario>
     +autorEncargado: Usuario
     +validarFormato(): Boolean
     +agregarAutor(autor: Usuario)
@@ -100,37 +101,26 @@ package models {
     +cambiarEstado(nuevoEstado: String)
   }
 
-  interface EstrategiaDeSeleccion {
-    +seleccionar(articulos: List<Articulo>): List<Articulo>
+  interface EstrategiaSeleccion {
+    +seleccionarArticulos(articulos: List<Articulo>): List<Articulo>
   }
 
-  class Mejores implements EstrategiaDeSeleccion {
-    +seleccionar(articulos: List<Articulo>): List<Articulo>
+  class Mejores extends EstrategiaSeleccion {
+    +puntajeMinimoAceptacion: Int
   }
 
-  class CorteFijo implements EstrategiaDeSeleccion {
-    +seleccionar(articulos: List<Articulo>): List<Articulo>
+  class CorteFijo extends EstrategiaSeleccion {
+    +porcentajeAceptacion: Float
   }
 
-  abstract class EstadoSesion {
-    +manejar(sesion: Sesion)
+  class Estado {
+    +avanzarEstado()
   }
 
-  class Recepcion extends EstadoSesion {
-    +manejar(sesion: Sesion)
-  }
-
-  class Bidding extends EstadoSesion {
-    +manejar(sesion: Sesion)
-  }
-
-  class Revisiones extends EstadoSesion {
-    +manejar(sesion: Sesion)
-  }
-
-  class Seleccion extends EstadoSesion {
-    +manejar(sesion: Sesion)
-  }
+  class Recepcion extends Estado {}
+  class Bidding extends Estado {}
+  class Revisiones extends Estado {}
+  class Seleccion extends Estado {}
 }
 
 Usuario "1" -- "*" Rol
@@ -139,9 +129,8 @@ Conferencia "1" -- "*" Usuario : "comitePrograma"
 Conferencia "1" -- "*" Sesion : "sesiones"
 Sesion "1" -- "*" Articulo : "articulos"
 Sesion "1" -- "*" Bid : "bids"
-Sesion "*" -- "1" EstrategiaDeSeleccion : "criterioSeleccion"
-Sesion "1" -- "*" EstadoSesion : "estado"
-Sesion "1" -- "*" Revision : "revisiones"
+Sesion "*" -- "1" EstrategiaSeleccion : "estrategiaSeleccion"
+Sesion "1" -- "*" Estado : "estado"
 Articulo "1" -- "*" Usuario : "autores"
 Bid "1" -- "1" Usuario : "revisor"
 Bid "1" -- "1" Articulo : "articulo"
