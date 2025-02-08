@@ -44,7 +44,7 @@ describe('Sesion', () => {
     it('No debería avanzar más allá del último estado', () => {
         const sesion = new SesionRegular('Topic', '2025-12-01');
         for (let i = 0; i < 4; i++) {
-            sesion.avanzarEstado();
+        sesion.avanzarEstado();
         }
         expect(sesion.estado instanceof Seleccion).toBe(true);
         sesion.avanzarEstado();

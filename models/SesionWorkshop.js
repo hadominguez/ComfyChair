@@ -2,8 +2,11 @@ const Sesion = require('./Sesion');
 const Articulo = require('./Articulo');
 
 class SesionWorkshop extends Sesion {
-  validarFormato(articulo) {
-    return articulo instanceof Articulo && articulo.validarFormato();
+  validarArticulo(articulo) {
+    if (!(articulo instanceof Articulo)) {
+      throw new Error("El artículo no es un Articulo válido.");
+    }
+    return articulo.validarFormato();
   }
 }
 

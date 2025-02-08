@@ -2,8 +2,11 @@ const Sesion = require('./Sesion');
 const ArticuloPoster = require('./ArticuloPoster');
 
 class SesionPoster extends Sesion {
-  validarFormato(articulo) {
-    return articulo instanceof ArticuloPoster && articulo.validarFormato();
+  validarArticulo(articulo) {
+    if (!(articulo instanceof ArticuloPoster)) {
+      throw new Error("El artículo no es un ArticuloPoster válido.");
+    }
+    return articulo.validarFormato();
   }
 }
 

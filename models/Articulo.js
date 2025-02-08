@@ -16,6 +16,9 @@ class Articulo {
   validarFormato() {
     throw new Error("Este método debe ser implementado por las subclases.");
   }
+  validarEnSesion(sesion) {
+    return sesion.validarArticulo(this);
+  }
 
   agregarRevisor(revisor) {
     if (revisor instanceof Revisor) {

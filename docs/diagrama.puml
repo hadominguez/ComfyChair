@@ -1,4 +1,4 @@
-@startuml
+@startuml diagrama
 
 package models {
   class Usuario {
@@ -45,7 +45,7 @@ package models {
     +puntajeMinimoAceptacion: Int
     +seleccionarArticulos()
     +agregarArticulo(articulo: Articulo)
-    +validarFormato(articulo: Articulo): Boolean
+    +validarArticulo(articulo: Articulo): Boolean
     +avanzarEstado()
     +iniciarBidding()
     +recibirBid(revisor: Revisor, articulo: Articulo, estado: String)
@@ -55,15 +55,15 @@ package models {
   }
 
   class SesionRegular extends Sesion {
-    +validarFormato(articulo: ArticuloRegular): Boolean
+    +validarArticulo(articulo: ArticuloRegular): Boolean
   }
 
   class SesionWorkshop extends Sesion {
-    +validarFormato(articulo: Articulo): Boolean
+    +validarArticulo(articulo: Articulo): Boolean
   }
 
   class SesionPoster extends Sesion {
-    +validarFormato(articulo: ArticuloPoster): Boolean
+    +validarArticulo(articulo: ArticuloPoster): Boolean
   }
 
   abstract class Articulo {
@@ -73,6 +73,7 @@ package models {
     +revisores: List<Usuario>
     +autorEncargado: Usuario
     +validarFormato(): Boolean
+    +validarEnSesion(sesion: Sesion): Boolean
     +agregarAutor(autor: Usuario)
     +agregarAutorEncargado(autor: Usuario)
   }
@@ -113,7 +114,7 @@ package models {
     +porcentajeAceptacion: Float
   }
 
-  class Estado {
+  abstract class Estado {
     +avanzarEstado()
   }
 
