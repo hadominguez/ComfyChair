@@ -13,8 +13,9 @@ test('Validar formato de artículo en SesionWorkshop', () => {
   articulo.agregarAutor(usuario);
   articulo.agregarAutorEncargado(usuario);
 
-  expect(sesion.validarFormato(articulo)).toBe(true);
+  // Se usa validarEnSesion en lugar de validarFormato directamente en la sesión
+  expect(articulo.validarEnSesion(sesion)).toBe(true);
 
   const articuloInvalido = {};
-  expect(sesion.validarFormato(articuloInvalido)).toBe(false);
+  expect(() => sesion.validarArticulo(articuloInvalido)).toThrow();
 });

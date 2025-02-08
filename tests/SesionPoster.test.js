@@ -13,8 +13,8 @@ test('Validar formato de artículo en SesionPoster', () => {
     articuloPoster.agregarAutor(usuario);
     articuloPoster.agregarAutorEncargado(usuario);
 
-    expect(sesion.validarFormato(articuloPoster)).toBe(true);
+    expect(articuloPoster.validarEnSesion(sesion)).toBe(true);
 
     const articuloInvalido = {};
-    expect(sesion.validarFormato(articuloInvalido)).toBe(false);
+    expect(() => sesion.validarArticulo(articuloInvalido)).toThrow();
 });

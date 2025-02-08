@@ -8,7 +8,7 @@ class ArticuloRegular extends Articulo {
 
   validarFormato() {
     let palabras = this.abstract.trim().split(/\s+/);
-    return (this.abstract !== null && this.abstract !== "") && palabras.length <= 300 && (this.titulo !== null && this.variable !== "") && this.autores.length >= 1;
+    return (this.abstract !== null && this.abstract !== "") && palabras.length <= 300 && (this.titulo !== null && this.titulo !== "") && this.autores.length >= 1;
   }
 }
 

@@ -1,10 +1,32 @@
 **Decisiones Tomadas Sobre el Enunciado de ComfyChair**
 
 1. **Estado del Proceso**:
-   - Los estados de las sesiones siguen un ciclo predeterminado: recepción, bidding, revisión, selección. Sin la posibilidad de volver a un estado anterior.
+   - Los estados de las sesiones siguen un ciclo predeterminado: **Recepción → Bidding → Revisión → Selección**. No se permite volver a un estado anterior, asegurando un flujo estricto del proceso de conferencias.
 
 2. **Asignación de Revisores**:
-   - Durante la etapa de asignación de revisores, se priorizan los revisores que indican interés en revisar un artículo. Si no hay suficientes interesados, se asignan aleatoriamente siguiendo el interés definido.
+   - Durante la etapa de asignación de revisores, se priorizan los revisores que indicaron interés en revisar un artículo.
+   - Si no hay suficientes revisores interesados, se asignan en el siguiente orden de prioridad: **"Quizás" → Sin interés explícito → "No interesado"**.
+   - Si aún no hay suficientes revisores, la asignación se realiza de forma aleatoria para garantizar un mínimo de **3 revisores por artículo**.
 
 3. **Criterio de Selección de Artículos**:
-   - Existen dos métodos de selección de artículos: corte fijo por porcentaje o selección por puntaje mínimo. Las sesiones pueden definir su manera de seleccionar o cambiar el criterio según necesidades.
+   - Existen dos métodos de selección de artículos:
+     - **Corte Fijo**: Se acepta un porcentaje definido de artículos con mejor puntaje.
+     - **Mejores**: Se aceptan todos los artículos que superen un puntaje mínimo.
+   - Cada sesión puede definir y cambiar su estrategia de selección según necesidades.
+
+4. **Validación de Artículos**:
+   - Se implementó el patrón **Double Dispatch** en la validación de artículos.
+   - La validación ya no ocurre dentro de la sesión directamente, sino que **cada artículo delega su validación a la sesión en la que se evalúa**, garantizando mayor flexibilidad y separación de responsabilidades.
+   - Esto permite que nuevas sesiones y tipos de artículos puedan agregarse sin modificar la lógica existente.
+
+5. **Estrategia de Validación de Formato**:
+   - La validación de formato de artículos se maneja dentro de la clase `Articulo`, pero se delega a `Sesion` a través del método `validarEnSesion(sesion)`.
+   - Se evita la validación directa dentro de las sesiones (`validarFormato()`), asegurando que cada sesión **define sus propios criterios de validación** sin romper el principio de responsabilidad única.
+
+6. **Restricciones en la Fecha Límite**:
+   - Los artículos **solo pueden agregarse durante la fase de Recepción** y antes de la fecha límite definida por cada sesión.
+   - Una vez cerrada la recepción, no se permite modificar o agregar artículos.
+
+7. **Roles de los Usuarios**:
+   - Un usuario puede tener múltiples roles (`Autor`, `Revisor`, `Chair`), lo que permite una **gestión más flexible de responsabilidades** dentro de la conferencia.
+   - Se utiliza **Composite Pattern** para manejar roles de manera estructurada.

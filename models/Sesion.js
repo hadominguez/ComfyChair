@@ -56,14 +56,14 @@ class Sesion {
       throw new Error('No se puede agregar artículos después de la fecha límite');
     }
 
-    if (this.validarFormato(articulo)) {
+    if (articulo.validarEnSesion(this)) {
       this.articulos.push(articulo);
     } else {
       throw new Error('Formato de artículo inválido.');
     }
   }
 
-  validarFormato(articulo) {
+  validarArticulo(articulo) {
     throw new Error("Este método debe ser implementado por las subclases.");
   }
 
